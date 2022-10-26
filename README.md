@@ -1,5 +1,5 @@
 # mysql_password_cracker
-Crack Mysql caching_sha2_password hashes
+Crack MySQL 8.0 caching_sha2_password algorithm passwords
 
 # Installation
 ```
