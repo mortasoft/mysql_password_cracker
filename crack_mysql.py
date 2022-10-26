@@ -7,26 +7,6 @@ import datetime
 import tqdm
 
 
-def scramble_caching_sha2(password, nonce):
-    # https://github.com/PyMySQL/PyMySQL/blob/main/pymysql/_auth.py
-    # (bytes, bytes) -> bytes
-    """Scramble algorithm used in cached_sha2_password fast path.
-    XOR(SHA256(password), SHA256(SHA256(SHA256(password)), nonce))
-    """
-    if not password:
-        return b""
-
-    p1 = hashlib.sha256(password).digest()
-    p2 = hashlib.sha256(p1).digest()
-    p3 = hashlib.sha256(p2 + nonce).digest()
-
-    res = bytearray(p1)
-    for i in range(len(p3)):
-        res[i] ^= p3[i]
-
-    return bytes(res)
-
-
 def crack_passwords(password_hash,salt,wordlist,mask):
     if len(password_hash) != 64:
         print("You must provide a valid password hash. (64 bytes)")
@@ -68,6 +48,7 @@ def crack_passwords(password_hash,salt,wordlist,mask):
 
     return {"result": False, "password": None}
 
+
 def _crack_password(password_hash,password,mask,salt):
 
     password = _mask_password(password,mask)
@@ -78,12 +59,34 @@ def _crack_password(password_hash,password,mask,salt):
     else:
         return False
 
+
+def scramble_caching_sha2(password, nonce):
+    # https://github.com/PyMySQL/PyMySQL/blob/main/pymysql/_auth.py
+    # (bytes, bytes) -> bytes
+    """Scramble algorithm used in cached_sha2_password fast path.
+    XOR(SHA256(password), SHA256(SHA256(SHA256(password)), nonce))
+    """
+    if not password:
+        return b""
+
+    p1 = hashlib.sha256(password).digest()
+    p2 = hashlib.sha256(p1).digest()
+    p3 = hashlib.sha256(p2 + nonce).digest()
+
+    res = bytearray(p1)
+    for i in range(len(p3)):
+        res[i] ^= p3[i]
+
+    return bytes(res)
+
+
 def _mask_password(password,mask):
     if not mask:
         return str.encode(password.strip())
     else:
         return str.encode(mask.replace("x",password.strip()))
      
+
 if __name__ == "__main__":
 
     start_time = datetime.datetime.now()
@@ -91,8 +94,8 @@ if __name__ == "__main__":
     parser.add_argument('--password', action='store', required=True, help='The sha256 password hash')
     parser.add_argument('--salt', action='store', required=True, help='The salt. Must be 20bits hex string. Example: "3b7749756a2f69763d057d07292719484b394e2b"')
     parser.add_argument('--wordlist', action='store', required=True, help='Text file with the wordlist to use')
-    parser.add_argument('--mask', action='store', default=None, help='The mask')
-    parser.add_argument('--verbose', '-v',  action='count', default=0, help='Verbosity Levels, v=Low, vv=High')
+    parser.add_argument('--mask', action='store', default=None, help='[Optional] The mask you want to use. The x is replaced with each password. Example: CiscoCTF{x}')
+    parser.add_argument('--verbose', '-v',  action='count', default=0, help='[Optional] Verbosity Levels, v=Low Shows a progress bar, vv=High Print each password tested')
     args = parser.parse_args()
 
     try:
