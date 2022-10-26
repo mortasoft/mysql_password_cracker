@@ -16,7 +16,7 @@ Crack MySQL 8.0 caching_sha2_password algorithm passwords
 
 options:
   -h, --help           show this help message and exit
-  --password PASSWORD  The sha256 password hash
+  --password PASSWORD  The sha256 password hash Example: "1248ed45984fd9b1e5ee7ff8dabde10d8c3bd768dbf47315feb48323e6c55222"
   --salt SALT          The salt. Must be 20bits hex string. Example: "3b7749756a2f69763d057d07292719484b394e2b"
   --wordlist WORDLIST  Text file with the wordlist to use
   --mask MASK          [Optional] The mask you want to use. The x is replaced with each password. Example: CiscoCTF{x}
