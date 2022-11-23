@@ -5,7 +5,7 @@ Crack MySQL 8.0 caching_sha2_password algorithm passwords using a wordlist
 ```
 git clone https://github.com/mortasoft/mysql_password_cracker
 cd mysql_password_cracker
-pip3 install -r requierements.txt
+pip3 install -r requirements.txt
 ```
 
 ## Usage
